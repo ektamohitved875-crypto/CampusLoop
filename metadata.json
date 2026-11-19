@@ -1,0 +1,8 @@
+{
+  "name": "CampusLoop — Buy. Sell. Rent. Repeat.",
+  "description": "Student-focused peer-to-peer campus marketplace for buying, selling, renting, and exchanging college essentials across Dehradun campuses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

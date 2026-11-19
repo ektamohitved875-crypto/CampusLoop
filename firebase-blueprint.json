@@ -1,0 +1,336 @@
+{
+  "entities": {
+    "AdminRecord": {
+      "title": "AdminRecord",
+      "description": "Trusted allowlist record for authorized CampusLoop administrators.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "grantedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "name", "createdAt"]
+    },
+    "User": {
+      "title": "User",
+      "description": "Core authenticated user account record with server-enforced role.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "role": { "type": "string", "enum": ["customer", "admin"] },
+        "status": { "type": "string", "enum": ["active", "suspended"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "lastLoginAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "role", "status", "createdAt", "lastLoginAt"]
+    },
+    "CustomerProfile": {
+      "title": "CustomerProfile",
+      "description": "Student verification and private customer profile metadata.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "fullName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "email": { "type": "string", "format": "email", "maxLength": 200 },
+        "college": { "type": "string", "maxLength": 160 },
+        "course": { "type": "string", "maxLength": 120 },
+        "academicYear": { "type": "string", "maxLength": 40 },
+        "campus": { "type": "string", "maxLength": 120 },
+        "contactNumber": { "type": "string", "maxLength": 24 },
+        "studentIdNumber": { "type": "string", "maxLength": 64 },
+        "verificationStatus": { "type": "string", "enum": ["unverified", "pending", "verified", "rejected"] },
+        "savedListingIds": { "type": "array", "description": "Up to 50 saved listing IDs" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "email", "verificationStatus", "updatedAt"]
+    },
+    "Listing": {
+      "title": "Listing",
+      "description": "Peer-to-peer student marketplace listing requiring admin approval.",
+      "type": "object",
+      "properties": {
+        "listingId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sellerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sellerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "sellerVerified": { "type": "boolean" },
+        "productName": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "category": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "listingType": { "type": "string", "enum": ["sell", "rent", "exchange"] },
+        "description": { "type": "string", "minLength": 10, "maxLength": 2000 },
+        "price": { "type": "number" },
+        "rentalPrice": { "type": "number" },
+        "rentalDuration": { "type": "string", "maxLength": 40 },
+        "condition": { "type": "string", "enum": ["New", "Like New", "Good", "Used"] },
+        "images": { "type": "array", "description": "1 to 5 product image URLs" },
+        "campus": { "type": "string", "minLength": 2, "maxLength": 120 },
+        "availability": { "type": "string", "enum": ["available", "reserved", "sold", "rented", "unavailable"] },
+        "contactPreference": { "type": "string", "enum": ["In-App Chat", "In-App + Phone"] },
+        "status": { "type": "string", "enum": ["pending", "approved", "rejected", "removed", "flagged"] },
+        "rejectionReason": { "type": "string", "maxLength": 500 },
+        "isFlagged": { "type": "boolean" },
+        "isDemo": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": [
+        "listingId",
+        "sellerId",
+        "sellerName",
+        "productName",
+        "category",
+        "listingType",
+        "description",
+        "price",
+        "condition",
+        "images",
+        "campus",
+        "availability",
+        "contactPreference",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "Inquiry": {
+      "title": "Inquiry",
+      "description": "Buy inquiry submitted by a student buyer to a seller.",
+      "type": "object",
+      "properties": {
+        "inquiryId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingTitle": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "listingImage": { "type": "string", "maxLength": 1000 },
+        "buyerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "buyerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "sellerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sellerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "offerPrice": { "type": "number" },
+        "message": { "type": "string", "minLength": 1, "maxLength": 1000 },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["inquiryId", "listingId", "listingTitle", "buyerId", "buyerName", "sellerId", "sellerName", "message", "status", "createdAt", "updatedAt"]
+    },
+    "RentalRequest": {
+      "title": "RentalRequest",
+      "description": "Rental booking request with dates and agreed terms.",
+      "type": "object",
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingTitle": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "listingImage": { "type": "string", "maxLength": 1000 },
+        "buyerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "buyerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "sellerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sellerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "startDate": { "type": "string", "maxLength": 32 },
+        "endDate": { "type": "string", "maxLength": 32 },
+        "agreedTerms": { "type": "string", "maxLength": 1000 },
+        "rentalPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requestId", "listingId", "listingTitle", "buyerId", "buyerName", "sellerId", "sellerName", "startDate", "endDate", "agreedTerms", "status", "createdAt", "updatedAt"]
+    },
+    "ExchangeRequest": {
+      "title": "ExchangeRequest",
+      "description": "Peer-to-peer item exchange proposal between students.",
+      "type": "object",
+      "properties": {
+        "requestId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "listingTitle": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "listingImage": { "type": "string", "maxLength": 1000 },
+        "buyerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "buyerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "sellerId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "sellerName": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "offeredItemTitle": { "type": "string", "minLength": 2, "maxLength": 140 },
+        "offeredItemDescription": { "type": "string", "minLength": 5, "maxLength": 1000 },
+        "offeredItemCondition": { "type": "string", "enum": ["New", "Like New", "Good", "Used"] },
+        "status": { "type": "string", "enum": ["pending", "accepted", "rejected", "completed", "cancelled"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["requestId", "listingId", "listingTitle", "buyerId", "buyerName", "sellerId", "sellerName", "offeredItemTitle", "offeredItemDescription", "offeredItemCondition", "status", "createdAt", "updatedAt"]
+    },
+    "Conversation": {
+      "title": "Conversation",
+      "description": "Direct buyer-seller chat thread anchored to a listing.",
+      "type": "object",
+      "properties": {
+        "conversationId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "participantIds": { "type": "array", "description": "Exactly 2 participant UIDs" },
+        "buyerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "buyerName": { "type": "string", "maxLength": 120 },
+        "sellerId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "sellerName": { "type": "string", "maxLength": 120 },
+        "listingId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "listingTitle": { "type": "string", "maxLength": 140 },
+        "listingImage": { "type": "string", "maxLength": 1000 },
+        "lastMessage": { "type": "string", "maxLength": 500 },
+        "lastSenderId": { "type": "string", "maxLength": 128 },
+        "unreadByBuyer": { "type": "boolean" },
+        "unreadBySeller": { "type": "boolean" },
+        "isReported": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["conversationId", "participantIds", "buyerId", "sellerId", "listingId", "listingTitle", "lastMessage", "unreadByBuyer", "unreadBySeller", "isReported", "createdAt", "updatedAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Individual chat message inside a conversation.",
+      "type": "object",
+      "properties": {
+        "messageId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "senderId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "senderName": { "type": "string", "maxLength": 120 },
+        "text": { "type": "string", "minLength": 1, "maxLength": 2000 },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["messageId", "senderId", "senderName", "text", "createdAt"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notification for listing approvals, inquiries, and messages.",
+      "type": "object",
+      "properties": {
+        "notificationId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "userId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "type": { "type": "string", "enum": ["inquiry", "listing_approved", "listing_rejected", "message", "rental_request", "exchange_request", "request_update", "verification"] },
+        "title": { "type": "string", "minLength": 1, "maxLength": 140 },
+        "body": { "type": "string", "minLength": 1, "maxLength": 500 },
+        "link": { "type": "string", "maxLength": 240 },
+        "read": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["notificationId", "userId", "type", "title", "body", "read", "createdAt"]
+    },
+    "Category": {
+      "title": "Category",
+      "description": "Marketplace category configured by administrators.",
+      "type": "object",
+      "properties": {
+        "categoryId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "name": { "type": "string", "minLength": 2, "maxLength": 80 },
+        "description": { "type": "string", "maxLength": 300 },
+        "imageUrl": { "type": "string", "maxLength": 1000 },
+        "isActive": { "type": "boolean" },
+        "sortOrder": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["categoryId", "name", "isActive", "sortOrder", "createdAt", "updatedAt"]
+    },
+    "Report": {
+      "title": "Report",
+      "description": "Trust and safety complaint filed against a listing, user, or conversation.",
+      "type": "object",
+      "properties": {
+        "reportId": { "type": "string", "minLength": 1, "maxLength": 128, "pattern": "^[a-zA-Z0-9_\\-]+$" },
+        "reporterId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "reporterName": { "type": "string", "maxLength": 120 },
+        "targetType": { "type": "string", "enum": ["listing", "user", "conversation"] },
+        "targetId": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "targetTitle": { "type": "string", "maxLength": 160 },
+        "reason": { "type": "string", "minLength": 3, "maxLength": 160 },
+        "details": { "type": "string", "maxLength": 1500 },
+        "status": { "type": "string", "enum": ["open", "under_review", "resolved", "dismissed"] },
+        "moderationDecision": { "type": "string", "maxLength": 500 },
+        "moderatedBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["reportId", "reporterId", "targetType", "targetId", "reason", "status", "createdAt", "updatedAt"]
+    },
+    "AdminAnalytics": {
+      "title": "AdminAnalytics",
+      "description": "Admin-only recorded transaction and activity summary.",
+      "type": "object",
+      "properties": {
+        "documentId": { "type": "string", "maxLength": 128 },
+        "totalCompletedTransactions": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["documentId", "totalCompletedTransactions", "updatedAt"]
+    },
+    "BusinessInsights": {
+      "title": "BusinessInsights",
+      "description": "Founder/Admin NEXUS venture planning assumptions and lab state.",
+      "type": "object",
+      "properties": {
+        "documentId": { "type": "string", "maxLength": 128 },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["documentId", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/admins/{adminId}": {
+      "schema": { "$ref": "#/entities/AdminRecord" },
+      "description": "Trusted admin allowlist documents."
+    },
+    "/users/{uid}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User account documents containing role and PII."
+    },
+    "/users/{uid}/profile/{profileId}": {
+      "schema": { "$ref": "#/entities/CustomerProfile" },
+      "description": "Private customer verification and academic profile subcollection."
+    },
+    "/listings/{listingId}": {
+      "schema": { "$ref": "#/entities/Listing" },
+      "description": "Marketplace product listings."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/Inquiry" },
+      "description": "Buy inquiries between buyers and sellers."
+    },
+    "/rentalRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/RentalRequest" },
+      "description": "Rental requests with dates and terms."
+    },
+    "/exchangeRequests/{requestId}": {
+      "schema": { "$ref": "#/entities/ExchangeRequest" },
+      "description": "Item exchange proposals."
+    },
+    "/conversations/{conversationId}": {
+      "schema": { "$ref": "#/entities/Conversation" },
+      "description": "Buyer-seller messaging threads."
+    },
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Messages belonging to a conversation."
+    },
+    "/notifications/{notificationId}": {
+      "schema": { "$ref": "#/entities/Notification" },
+      "description": "User notification records."
+    },
+    "/categories/{categoryId}": {
+      "schema": { "$ref": "#/entities/Category" },
+      "description": "Marketplace categories."
+    },
+    "/reports/{reportId}": {
+      "schema": { "$ref": "#/entities/Report" },
+      "description": "Trust & safety reports and complaints."
+    },
+    "/adminAnalytics/{documentId}": {
+      "schema": { "$ref": "#/entities/AdminAnalytics" },
+      "description": "Admin-only analytics summary documents."
+    },
+    "/businessInsights/{documentId}": {
+      "schema": { "$ref": "#/entities/BusinessInsights" },
+      "description": "Admin-only NEXUS venture planning labs data."
+    }
+  }
+}
